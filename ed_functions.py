@@ -31,9 +31,22 @@ def State_Config(config):
     return  acc  
     
     
-def Operator_Exp(ini_state, operator):
+def Operator_Expt(ini_state, operator):
     return np.conj(ini_state) @ operator @ ini_state
 
+def ising_ham(h_z,h_x,A, boundary_condition=False):
+    Sx = [[0, 1], [1, 0]]
+    Sy = [[0, - 1j],[+ 1j, 0]]
+    Sz = [[1, 0],[0, -1]]
+    H =  np.zeros((2**A, 2**A))
+    for l in range(1, A):
+        H += -1*np.kron(np.eye(2**(l-1)), np.kron(Sx, np.kron(Sx, np.eye(2**(A-l-1)))))
+        H += h_z*np.kron(np.eye(2**(l-1)), np.kron(Sz, np.eye(2**(A-l))))
+        H += h_x*np.kron(np.eye(2**(l-1)), np.kron(Sx, np.eye(2**(A-l))))
+    H += h_z*np.kron(np.eye(2**(A-1), Sz)) + h_x*np.kron(np.eye(2**(A-1), Sx))
+    if boundary_condition:
+        H += -1*np.kron(Sx, np.kron( np.eye(2**(A-2)), Sx))
+    return H
 
 # def XX_TE_O(dt,L):
 #     Sx = [[0, 1], [1, 0]]
@@ -63,10 +76,3 @@ def Operator_Exp(ini_state, operator):
 #     return VVe @ np.diag(np.exp(-dt*1j*EEe)) @ np.transpose(np.conj(VVe))
 
 
-# GhostH =  np.zeros((2**A, 2**A))
-# for l in range(1, L):
-#     H0 = np.kron(np.eye(2**(l-1)), np.kron(Sx, np.kron(Sx, np.eye(2**(L-l-1)))))
-#     H1 = np.kron(np.eye(2**(l-1)), np.kron(Sz, np.eye(2**(A-l))))
-#     H2 = np.kron(np.eye(2**(l-1)), np.kron(Sx, np.kron(np.eye(2**(L-1)), np.kron(Sx, np.eye(2**(L-l))))))
-    
-#     GhostH = GhostH - H0 - hz*H1 + hx*H2 

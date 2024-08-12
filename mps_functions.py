@@ -3,7 +3,6 @@ from scipy.linalg import expm, sinm, cosm
 from helper import mps_svd
 
 class MPS:
-    # tensor convention: (v1, p, v2)
 
     def __init__(self, left_tensors=[], right_tensors=[], schmidt_matrix=np.eye(1)):
         self.left_tensors = left_tensors
@@ -12,6 +11,7 @@ class MPS:
 
     @classmethod
     def zero(cls, N):
+        # tensor convention: (v1, p, v2)
 
         B = np.array([1,0]).reshape((1,2,1))
 
