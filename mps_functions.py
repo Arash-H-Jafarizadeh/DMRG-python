@@ -35,7 +35,7 @@ class MPS:
     
 
     @classmethod
-    def random_chi2(cls, N):
+    def random_chi(cls, N):
 
         left_tensors = []
         right_tensors = []
@@ -266,5 +266,5 @@ class MPS:
 
 
 if __name__ == "__main__":
-
-    mps_default = MPS()
+    "some tests"
+    #mps_state = random_chi(5)
