@@ -35,7 +35,7 @@ class MPS:
     
 
     @classmethod
-    def random_chi(cls, N):
+    def random_chi(cls, N, max_bond=4):
 
         left_tensors = []
         right_tensors = []
@@ -54,7 +54,7 @@ class MPS:
             M = np.tensordot(M1, M2, axes=([2],[0]))  # (v1, p1, v2)*(v1, p2, v2) -> (v1, p1, p2, v2)
             M = np.tensordot(M, schmidt_matrix, axes=([3],[0]))  # (v1, p1, p2, v2)*(v1, v2) -> (v1, p1, p2, v2)
 
-            A, schmidt_matrix, B = mps_svd(M, chi_max=2)
+            A, schmidt_matrix, B = mps_svd(M, chi_max=max_bond)
 
             tensors[ii-1] = A
             right_tensors.insert(0,B)

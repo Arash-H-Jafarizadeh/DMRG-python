@@ -34,7 +34,7 @@ def State_Config(config):
 def Operator_Expt(ini_state, operator):
     return np.conj(ini_state) @ operator @ ini_state
 
-def ising_ham(h_z,h_x,A, boundary_condition=False):
+def ising_ED(h_z,h_x,A, boundary_condition=False):
     Sx = [[0, 1], [1, 0]]
     Sy = [[0, - 1j],[+ 1j, 0]]
     Sz = [[1, 0],[0, -1]]
@@ -43,7 +43,7 @@ def ising_ham(h_z,h_x,A, boundary_condition=False):
         H += -1*np.kron(np.eye(2**(l-1)), np.kron(Sx, np.kron(Sx, np.eye(2**(A-l-1)))))
         H += h_z*np.kron(np.eye(2**(l-1)), np.kron(Sz, np.eye(2**(A-l))))
         H += h_x*np.kron(np.eye(2**(l-1)), np.kron(Sx, np.eye(2**(A-l))))
-    H += h_z*np.kron(np.eye(2**(A-1), Sz)) + h_x*np.kron(np.eye(2**(A-1), Sx))
+    H += h_z*np.kron(np.eye(2**(A-1)), Sz) + h_x*np.kron(np.eye(2**(A-1)), Sx)
     if boundary_condition:
         H += -1*np.kron(Sx, np.kron( np.eye(2**(A-2)), Sx))
     return H
