@@ -12,7 +12,6 @@ class MPS:
     @classmethod
     def zero(cls, N):
         # tensor convention: (v1, p, v2)
-
         B = np.array([1,0]).reshape((1,2,1))
 
         left_tensors = []

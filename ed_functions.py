@@ -9,7 +9,14 @@ from scipy import linalg as la
 
 
 def Spin(a,j,L):
-    
+    """_summary_: Matrix representaion of one-qubit operator in a 2^Lx2^L representation. 
+    Args:
+        a (_int_): spin componenet 1, 2 or 3 for x, y or z respectively.
+        j (_int_): index position of the spin from 1 to L.
+        L (_int_): size of full system.
+    Returns:
+        _numpy.ndarray_: 
+    """
     spin = [[[0, 1], [1, 0]], [[0, - 1j],[+ 1j, 0]], [[1, 0],[0, -1]]]
     return np.kron(np.eye(2**(j-1)), np.kron(spin[abs(int(a)-1)], np.eye(2**(L-j))))
 
@@ -25,7 +32,7 @@ def Z2_State(L):
     return zvar#np.array( [0]*NN + [1] + [0]*(2**L-1) )    
 
 
-def State_Config(config):
+def Config_State(config):
     qbit=[[1.,0.],[0.,1.]]
     acc = 1; [acc := np.kron(acc,qbit[x]) for x in config]
     return  acc  
