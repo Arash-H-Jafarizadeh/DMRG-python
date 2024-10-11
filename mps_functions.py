@@ -260,7 +260,27 @@ class MPS:
         
         return #left_tensors, right_tensors, schmidt_matrix #
         
+      
+    def one_operato_energy(self, spin:int):
         
+        left_tensors = self.left_tensors
+        right_tensors = self.right_tensors
+        schmidt_matrix = self.schmidt_matrix
+        
+        L = len(left_tensors) + len(right_tensors)
+        
+        op = [np.array([[0, 1],[1, 0]]), np.array([[0, -1j],[1j, 0]]), np.array([[1, 0],[0, -1]])]
+
+        X0 = np.tensordot( schmidt_matrix, schmidt_matrix.conj(), (0,0)) 
+        energy = 0.0
+        for el in range(L):
+            E0 = np.tensordot(right_tensors[el], right_tensors[el].conj(), (2,2))
+            E0 = np.tensordot(E0, op[spin % 3], ([1,3],[0,1]))
+            energy += np.real( np.tensordot( E0, X0, ([0,1],[0,1]) ) )
+            # print("----", E1.shape,",", E1)
+            X0 = np.tensordot(X0, np.tensordot(right_tensors[el], right_tensors[el].conj(),(1,1)), ([0,1],[0,2]))
+
+        return energy
 
 
 
