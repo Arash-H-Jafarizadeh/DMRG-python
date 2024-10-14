@@ -16,7 +16,7 @@ def ising(N, J, g, boundary_condition=False):
     w_tensor = np.zeros((3,2,2,3))  #* tensor convention should be (D,d,d,D). 
     w_tensor[0,:,:,0] = np.eye(2) # 1 
     w_tensor[0,:,:,1] = np.eye(2)[[1,0]] #X
-    w_tensor[0,:,:,2] = -1*g*np.array([[1,0],[0,-1]]) #-Jg.Z
+    w_tensor[0,:,:,2] = -J*g*np.array([[1,0],[0,-1]]) #-Jg.Z
     w_tensor[1,:,:,2] = -J*np.eye(2)[[1,0]] #-J.X
     w_tensor[2,:,:,2] = np.eye(2) #1
     

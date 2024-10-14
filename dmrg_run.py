@@ -35,7 +35,7 @@ dens_state = MPS.to_dense(mps_state)
 print('\n')
 # print("-ed -", [np.real( dens_state @ ed.Spin(3,jj,L) @ np.conj(dens_state) ) for jj in range(1,L+1)], ",", sum( [np.real( dens_state @ ed.Spin(3,jj,L) @ np.conj(dens_state) ) for jj in range(1,L+1)]))
 # print("-ed -", [np.real( dens_state @ ed.Spin(1,jj,L) @ np.conj(dens_state) ) for jj in range(1,L+1)], ",", sum( [np.real( dens_state @ ed.Spin(1,jj,L) @ np.conj(dens_state) ) for jj in range(1,L+1)]))
-print("-ed -", [-1.0*np.real( dens_state @ ed.Spin(1,jj,L) @ ed.Spin(1,jj+1,L) @ np.conj(dens_state) ) for jj in range(1,L)] ,",", np.real( dens_state @ ed.ising_ED(0,0,L) @ dens_state.conj() ) )
+print("-ed -", [-1.0*np.real( dens_state @ ed.Spin(1,jj,L) @ ed.Spin(1,jj+1,L) @ np.conj(dens_state) ) for jj in range(1,L)] ,",", np.real( dens_state @ ed.ising_ED(-1.0,0,L) @ dens_state.conj() ) )
 # print(la.norm(dens_state), ",", sum([np.real( dens_state @ ed.Spin(1,jj,L) @ np.conj(dens_state) ) for jj in range(1,L+1)]) ,",", dens_state @ ed.ising_ED(0,1,L) @ dens_state.conj())
 
 ## norm of the mps state
@@ -91,7 +91,7 @@ print("-mps-",XX_energy,",",sum(XX_energy))
 # dens_state = MPS.to_dense(mps_state)
 # # print(la.norm(dens_state), " , ", dens_state @ Spin(3,1,5) @ np.conj(dens_state))
 print('\n')
-mpo_ham = mpo.ising(L,1.0,0.0)
+mpo_ham = mpo.ising(L,1.0,1.0)
 print([aa.shape for aa in mpo_ham])
 
 var0 = np.tensordot(mps_state.schmidt_matrix, mps_state.schmidt_matrix.conj(),(0,0))
