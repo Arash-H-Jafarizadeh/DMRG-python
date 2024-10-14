@@ -2,7 +2,8 @@ import numpy as np
 import scipy.linalg as la
 from helper import *
 from mps_functions import *
-from mpo_functions import *
+# from mpo_functions import *
+import mpo_functions as mpo
 # from ed_functions import *
 import ed_functions as ed
 
