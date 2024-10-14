@@ -37,7 +37,7 @@ print(la.norm(dens_state), ",", [np.real( dens_state @ ed.Spin(1,jj,L) @ np.conj
 print(la.norm(dens_state), ",", [np.real( dens_state @ ed.Spin(1,jj,L) @ ed.Spin(1,jj+1,L) @ np.conj(dens_state) ) for jj in range(1,L)] ,",", np.real( dens_state @ ed.ising_ED(0,0,L) @ dens_state.conj() ) )
 # print(la.norm(dens_state), ",", sum([np.real( dens_state @ ed.Spin(1,jj,L) @ np.conj(dens_state) ) for jj in range(1,L+1)]) ,",", dens_state @ ed.ising_ED(0,1,L) @ dens_state.conj())
 
-
+## norm of the mps state
 # tnnorm = np.tensordot( np.conj( mps_state.schmidt_matrix), mps_state.schmidt_matrix, (0,0))
 # print("-",tnnorm.shape)
 # for tnsr in mps_state.right_tensors:
@@ -48,9 +48,9 @@ print(la.norm(dens_state), ",", [np.real( dens_state @ ed.Spin(1,jj,L) @ ed.Spin
 #     print("--", tnnorm.shape)
 # print(tnnorm)
 
+## one operator (here is X or Z so far)
 zop=np.array([[1, 0],[0, -1]])
 xop=np.array([[0, 1],[1, 0]])
-
 X0 = np.tensordot( mps_state.schmidt_matrix, mps_state.schmidt_matrix.conj(), (0,0)) 
 for el in range(L):
     # E0 = np.tensordot(X0, xop, ([0,2],[0,1]))
@@ -62,12 +62,8 @@ for el in range(L):
     print("----", E1.shape,",", np.real(E1))
     X0 = np.tensordot(X0, np.tensordot(mps_state.right_tensors[el], mps_state.right_tensors[el].conj(),(1,1)), ([0,1],[0,2]))
 
-# E0 = np.tensordot(np.conj(mps_state.right_tensors[L-1]), mps_state.right_tensors[L-1], (2,2) )
-# E0 = np.tensordot( X0, E0, ([0,1],[0,2]) )
-# E0 = np.tensordot( E0, xop, ([0,1],[0,1]) )
-# print("--", E0)
 
-
+## two operators (here is XX so far)
 xxop = np.tensordot(xop,xop,0)
 XX0 = np.tensordot(mps_state.schmidt_matrix, mps_state.schmidt_matrix.conj(),(0,0)) 
 # print(" --",XX0.shape)
@@ -81,15 +77,6 @@ for el in range(L-1):
     print(" ----",E3.shape,",",E3)
     XX0 = np.tensordot(XX0, np.tensordot(mps_state.right_tensors[el],mps_state.right_tensors[el].conj(),(1,1)), ([0,1],[0,2]))
     # print(" ----",XX0.shape)
-
-# E0 = np.tensordot(mps_state.right_tensors[0], mps_state.right_tensors[1],(2,0))
-# print(" --0--", E0.shape)
-# E3 = np.tensordot(E0, E0.conj(), ([0,3],[0,3]))
-# print(" --0--", E3.shape)
-# E4 = np.tensordot(E3, xxop, ([0,1,2,3],[0,2,1,3]))
-# print(" --0--", E4.shape, " , ",E4)
-
-# print("--ED--",la.norm(dens_state), ", ",[dens_state @ Spin(3, ii, 4) @ np.conj(dens_state) for ii in range(1,5)], sum([dens_state @ Spin(3, ii, 4) @ np.conj(dens_state) for ii in range(1,5)]))
 
 
 
