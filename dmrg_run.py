@@ -2,6 +2,7 @@ import numpy as np
 import scipy.linalg as la
 from helper import *
 from old_mps_class import *
+from fast_mps_class import *
 # from mpo_functions import *
 import mpo_functions as mpo
 # from ed_functions import *
@@ -26,17 +27,105 @@ import ed_functions as ed
 # print( fin )
 
 #### tn checks
-L = 4
+L = 8
 # mps_state = MPS.zero(4)
-mps_state = MPS.random_chi(4, max_bond=2)
+# mps_state = MPS.random_chi(4, max_bond=2)
 # print(mps_state.shape)
-print([a.shape for a in mps_state.left_tensors], mps_state.schmidt_matrix.shape, [a.shape for a in mps_state.right_tensors])
-dens_state = MPS.to_dense(mps_state)
-print('\n')
+# print([a.shape for a in mps_state.left_tensors], mps_state.schmidt_matrix.shape, [a.shape for a in mps_state.right_tensors])
+# dens_state = MPS.to_dense(mps_state)
+# print('\n')
 # print("-ed -", [np.real( dens_state @ ed.Spin(3,jj,L) @ np.conj(dens_state) ) for jj in range(1,L+1)], ",", sum( [np.real( dens_state @ ed.Spin(3,jj,L) @ np.conj(dens_state) ) for jj in range(1,L+1)]))
 # print("-ed -", [np.real( dens_state @ ed.Spin(1,jj,L) @ np.conj(dens_state) ) for jj in range(1,L+1)], ",", sum( [np.real( dens_state @ ed.Spin(1,jj,L) @ np.conj(dens_state) ) for jj in range(1,L+1)]))
-print("-ed -", [-1.0*np.real( dens_state @ ed.Spin(1,jj,L) @ ed.Spin(1,jj+1,L) @ np.conj(dens_state) ) for jj in range(1,L)] ,",", np.real( dens_state @ ed.ising_ED(-1.0,0,L) @ dens_state.conj() ) )
+# print("-ed -", [-1.0*np.real( dens_state @ ed.Spin(1,jj,L) @ ed.Spin(1,jj+1,L) @ np.conj(dens_state) ) for jj in range(1,L)] ,",", np.real( dens_state @ ed.ising_ED(-1.0,0,L) @ dens_state.conj() ) )
 # print(la.norm(dens_state), ",", sum([np.real( dens_state @ ed.Spin(1,jj,L) @ np.conj(dens_state) ) for jj in range(1,L+1)]) ,",", dens_state @ ed.ising_ED(0,1,L) @ dens_state.conj())
+
+
+fmps_state = FMPS.random_chi(L, max_bond=2)
+# fmps_state = FMPS.zero(4)
+print([a.shape for a in fmps_state.tensors], fmps_state.center)
+fdens_state = fmps_state.to_dense()
+print(fdens_state.shape," - ", la.norm(fdens_state))
+# print(",",fmps_state.tensors[1].reshape( (np.shape(fmps_state.tensors[1])[0]*np.shape(fmps_state.tensors[1])[1]*np.shape(fmps_state.tensors[1])[2],)))
+
+fmps_state.shift_right()
+fdens_state = fmps_state.to_dense()
+print([a.shape for a in fmps_state.tensors], fmps_state.center)
+print(fdens_state.shape," - ", la.norm(fdens_state))
+# print(",",fmps_state.tensors[1].reshape( (np.shape(fmps_state.tensors[1])[0]*np.shape(fmps_state.tensors[1])[1]*np.shape(fmps_state.tensors[1])[2],))) 
+
+fmps_state.shift_right()
+fdens_state = fmps_state.to_dense()
+print([a.shape for a in fmps_state.tensors], fmps_state.center)
+print(fdens_state.shape," - ", la.norm(fdens_state))
+# print(",",fmps_state.tensors[1].reshape( (np.shape(fmps_state.tensors[1])[0]*np.shape(fmps_state.tensors[1])[1]*np.shape(fmps_state.tensors[1])[2],))) 
+
+fmps_state.shift_right()
+fdens_state = fmps_state.to_dense()
+print([a.shape for a in fmps_state.tensors], fmps_state.center)
+print(fdens_state.shape," - ", la.norm(fdens_state))
+# print(",",fmps_state.tensors[1].reshape( (np.shape(fmps_state.tensors[1])[0]*np.shape(fmps_state.tensors[1])[1]*np.shape(fmps_state.tensors[1])[2],))) 
+
+fmps_state.shift_right()
+fdens_state = fmps_state.to_dense()
+print([a.shape for a in fmps_state.tensors], fmps_state.center)
+print(fdens_state.shape," - ", la.norm(fdens_state))
+# print(",",fmps_state.tensors[1].reshape( (np.shape(fmps_state.tensors[1])[0]*np.shape(fmps_state.tensors[1])[1]*np.shape(fmps_state.tensors[1])[2],))) 
+
+fmps_state.shift_right()
+fdens_state = fmps_state.to_dense()
+print([a.shape for a in fmps_state.tensors], fmps_state.center)
+print(fdens_state.shape," - ", la.norm(fdens_state))
+# print(",",fmps_state.tensors[1].reshape( (np.shape(fmps_state.tensors[1])[0]*np.shape(fmps_state.tensors[1])[1]*np.shape(fmps_state.tensors[1])[2],))) 
+
+fmps_state.shift_right()
+fdens_state = fmps_state.to_dense()
+print([a.shape for a in fmps_state.tensors], fmps_state.center)
+print(fdens_state.shape," - ", la.norm(fdens_state))
+# print(",",fmps_state.tensors[1].reshape( (np.shape(fmps_state.tensors[1])[0]*np.shape(fmps_state.tensors[1])[1]*np.shape(fmps_state.tensors[1])[2],))) 
+
+fmps_state.shift_right()
+fdens_state = fmps_state.to_dense()
+print([a.shape for a in fmps_state.tensors], fmps_state.center)
+print(fdens_state.shape," - ", la.norm(fdens_state))
+# print(",",fmps_state.tensors[1].reshape( (np.shape(fmps_state.tensors[1])[0]*np.shape(fmps_state.tensors[1])[1]*np.shape(fmps_state.tensors[1])[2],))) 
+
+fmps_state.shift_left()
+fdens_state = fmps_state.to_dense()
+print([a.shape for a in fmps_state.tensors], fmps_state.center)
+print(fdens_state.shape," - ", la.norm(fdens_state))
+# print(",",fmps_state.tensors[1].reshape( (np.shape(fmps_state.tensors[1])[0]*np.shape(fmps_state.tensors[1])[1]*np.shape(fmps_state.tensors[1])[2],))) 
+
+fmps_state.shift_left()
+fdens_state = fmps_state.to_dense()
+print([a.shape for a in fmps_state.tensors], fmps_state.center)
+print(fdens_state.shape," - ", la.norm(fdens_state))
+# print(",",fmps_state.tensors[1].reshape( (np.shape(fmps_state.tensors[1])[0]*np.shape(fmps_state.tensors[1])[1]*np.shape(fmps_state.tensors[1])[2],))) 
+
+fmps_state.shift_left()
+fdens_state = fmps_state.to_dense()
+print([a.shape for a in fmps_state.tensors], fmps_state.center)
+print(fdens_state.shape," - ", la.norm(fdens_state))
+# print(",",fmps_state.tensors[1].reshape( (np.shape(fmps_state.tensors[1])[0]*np.shape(fmps_state.tensors[1])[1]*np.shape(fmps_state.tensors[1])[2],))) 
+
+fmps_state.shift_left()
+fdens_state = fmps_state.to_dense()
+print([a.shape for a in fmps_state.tensors], fmps_state.center)
+print(fdens_state.shape," - ", la.norm(fdens_state))
+# print(",",fmps_state.tensors[1].reshape( (np.shape(fmps_state.tensors[1])[0]*np.shape(fmps_state.tensors[1])[1]*np.shape(fmps_state.tensors[1])[2],))) 
+
+fmps_state.shift_left()
+fdens_state = fmps_state.to_dense()
+print([a.shape for a in fmps_state.tensors], fmps_state.center)
+print(fdens_state.shape," - ", la.norm(fdens_state))
+# print(",",fmps_state.tensors[1].reshape( (np.shape(fmps_state.tensors[1])[0]*np.shape(fmps_state.tensors[1])[1]*np.shape(fmps_state.tensors[1])[2],))) 
+
+fmps_state.shift_left()
+fdens_state = fmps_state.to_dense()
+print([a.shape for a in fmps_state.tensors], fmps_state.center)
+print(fdens_state.shape," - ", la.norm(fdens_state))
+# print(",",fmps_state.tensors[1].reshape( (np.shape(fmps_state.tensors[1])[0]*np.shape(fmps_state.tensors[1])[1]*np.shape(fmps_state.tensors[1])[2],))) 
+print('\n')
+
 
 ## norm of the mps state
 # tnnorm = np.tensordot( np.conj( mps_state.schmidt_matrix), mps_state.schmidt_matrix, (0,0))
@@ -68,53 +157,53 @@ xop=np.array([[0, 1],[1, 0]])
 # print("-mps-",X_energy,",",sum(X_energy))
 
 # ## two operators (here is XX so far)
-XX_energy = []
-xxop = np.tensordot(-1.0 * xop,xop,0)
-XX0 = np.tensordot(mps_state.schmidt_matrix, mps_state.schmidt_matrix.conj(),(0,0)) 
-for el in range(L-1):
-    E0 = np.tensordot(mps_state.right_tensors[el], mps_state.right_tensors[el+1],(2,0))
-    E1 = np.tensordot(E0, E0.conj(), (3,3))
-    # print(" ----",E1.shape)
-    E2 = np.tensordot(E1, XX0, ([0,3],[0,1])) 
-    # print(" ----",E2.shape)
-    E3 = np.tensordot(E2, xxop, ([0,1,2,3],[0,2,1,3]))
-    # print(" ----",E3.shape,",",E3)
-    XX_energy.append( np.float64(E3.real) )
-    XX0 = np.tensordot(XX0, np.tensordot(mps_state.right_tensors[el],mps_state.right_tensors[el].conj(),(1,1)), ([0,1],[0,2]))
-    # print(" ----",XX0.shape)
-print("-mps-",XX_energy,",",sum(XX_energy))
+# XX_energy = []
+# xxop = np.tensordot(-1.0 * xop,xop,0)
+# XX0 = np.tensordot(mps_state.schmidt_matrix, mps_state.schmidt_matrix.conj(),(0,0)) 
+# for el in range(L-1):
+#     E0 = np.tensordot(mps_state.right_tensors[el], mps_state.right_tensors[el+1],(2,0))
+#     E1 = np.tensordot(E0, E0.conj(), (3,3))
+#     # print(" ----",E1.shape)
+#     E2 = np.tensordot(E1, XX0, ([0,3],[0,1])) 
+#     # print(" ----",E2.shape)
+#     E3 = np.tensordot(E2, xxop, ([0,1,2,3],[0,2,1,3]))
+#     # print(" ----",E3.shape,",",E3)
+#     XX_energy.append( np.float64(E3.real) )
+#     XX0 = np.tensordot(XX0, np.tensordot(mps_state.right_tensors[el],mps_state.right_tensors[el].conj(),(1,1)), ([0,1],[0,2]))
+#     # print(" ----",XX0.shape)
+# print("-mps-",XX_energy,",",sum(XX_energy))
 
 
-## ~~ trying the mpo version
+############# trying the mpo version
 # mps_state = MPS.random_chi(4, max_bond=2)
 # print([a.shape for a in mps_state.left_tensors], mps_state.schmidt_matrix.shape, [a.shape for a in mps_state.right_tensors])
 # dens_state = MPS.to_dense(mps_state)
 # # print(la.norm(dens_state), " , ", dens_state @ Spin(3,1,5) @ np.conj(dens_state))
-print('\n')
-mpo_ham = mpo.ising(L,1.0,1.0)
-print([aa.shape for aa in mpo_ham])
+# print('\n')
+# mpo_ham = mpo.ising(L,1.0,1.0)
+# print([aa.shape for aa in mpo_ham])
 
-var0 = np.tensordot(mps_state.schmidt_matrix, mps_state.schmidt_matrix.conj(),(0,0))
-# print("- ",var0.shape)
-var1 = np.tensordot(mps_state.right_tensors[0], mpo_ham[0],(1,1))
-# print("- ",var1.shape)
-var1 = np.tensordot(var1,mps_state.right_tensors[0].conj(),(2,1))
-# print("- ",var1.shape)
-var0 = np.tensordot(var0, var1, ([0,1],[0,3]))
-# print("- ",var0.shape)
-for el in range(1,L-1):
-    # print('-- loop --', el)
-    var2 = np.tensordot(mps_state.right_tensors[el], mpo_ham[el],(1,2))
-    # print("-- ",var2.shape)
-    var3 = np.tensordot(var2,mps_state.right_tensors[el].conj(),(3,1))
-    # print("-- ",var3.shape)
-    var0 = np.tensordot(var0, var3, ([0,1,2],[0,2,4]))
-    # print("-- ",var0.shape)
-# print('- loop -', L-1)
-var4 = np.tensordot(mps_state.right_tensors[L-1], mpo_ham[L-1],(1,2))
-# print("-- ",var4.shape)
-var5 = np.tensordot(var4,mps_state.right_tensors[L-1].conj(),(3,1))
-# print("-- ",var5.shape)
-var0 = np.tensordot(var0, var5, ([0,1,2],[0,2,3]))
-print("-- ",var0.shape, "-->", var0[0,0].real)
+# var0 = np.tensordot(mps_state.schmidt_matrix, mps_state.schmidt_matrix.conj(),(0,0))
+# # print("- ",var0.shape)
+# var1 = np.tensordot(mps_state.right_tensors[0], mpo_ham[0],(1,1))
+# # print("- ",var1.shape)
+# var1 = np.tensordot(var1,mps_state.right_tensors[0].conj(),(2,1))
+# # print("- ",var1.shape)
+# var0 = np.tensordot(var0, var1, ([0,1],[0,3]))
+# # print("- ",var0.shape)
+# for el in range(1,L-1):
+#     # print('-- loop --', el)
+#     var2 = np.tensordot(mps_state.right_tensors[el], mpo_ham[el],(1,2))
+#     # print("-- ",var2.shape)
+#     var3 = np.tensordot(var2,mps_state.right_tensors[el].conj(),(3,1))
+#     # print("-- ",var3.shape)
+#     var0 = np.tensordot(var0, var3, ([0,1,2],[0,2,4]))
+#     # print("-- ",var0.shape)
+# # print('- loop -', L-1)
+# var4 = np.tensordot(mps_state.right_tensors[L-1], mpo_ham[L-1],(1,2))
+# # print("-- ",var4.shape)
+# var5 = np.tensordot(var4,mps_state.right_tensors[L-1].conj(),(3,1))
+# # print("-- ",var5.shape)
+# var0 = np.tensordot(var0, var5, ([0,1,2],[0,2,3]))
+# print("-- ",var0.shape, "-->", var0[0,0].real)
     

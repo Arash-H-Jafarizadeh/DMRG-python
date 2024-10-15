@@ -36,13 +36,13 @@ class FMPS:
         schmidt_matrix = np.eye(1)
 
         random_tensors = [np.random.randn(2,2,2) + 1j*np.random.randn(2,2,2) for _ in range(N)]  # (v1, p, v2)
-        random_tensors[0] = tensors[0][0,:,:].reshape((1,2,2))  # (v1=1, p, v2)
-        random_tensors[-1] = tensors[-1][:,:,0].reshape((2,2,1))  # (v1, p, v2=1)
+        random_tensors[0] = random_tensors[0][0,:,:].reshape((1,2,2))  # (v1=1, p, v2)
+        random_tensors[-1] = random_tensors[-1][:,:,0].reshape((2,2,1))  # (v1, p, v2=1)
 
         for ii in range(N-1, 0, -1):
 
-            M1 = tensors[ii-1]
-            M2 = tensors[ii]
+            M1 = random_tensors[ii-1]
+            M2 = random_tensors[ii]
 
             # contract M1 and M2
             M = np.tensordot(M1, M2, axes=([2],[0]))  # (v1, p1, v2)*(v1, p2, v2) -> (v1, p1, p2, v2)
@@ -50,18 +50,52 @@ class FMPS:
 
             A, schmidt_matrix, B = mps_svd(M, chi_max=max_bond)
 
-            tensors[ii-1] = A
-            right_tensors.insert(0,B)
+            random_tensors[ii-1] = A
+            tensors.insert(0,B)
+            center_pos += -1
 
-        A = tensors[0]
+        A = random_tensors[0]
         B = np.tensordot(A, schmidt_matrix, axes=([2],[0]))  # (v1, p1, v2)*(v1, v2) -> (v1, p1, v2)
-        right_tensors.insert(0,B)
+        tensors.insert(0,B)
 
-        schmidt_matrix = np.eye(1)
-
-        return cls(tensors = tensors, center = 0)
+        # schmidt_matrix = np.eye(1)
+        center_pos += -1
+        return cls(tensors = tensors, center = center_pos)
     
 
+    def shift_right(self):
+
+        cntr = self.center
+        schmidt_matrix = np.eye(1)
+        
+        M = np.tensordot(self.tensors[cntr], self.tensors[cntr+1], axes=([2],[0]))  
+        A, schmidt_matrix, B = mps_svd(M, chi_max=4)
+
+        self.tensors[cntr] = A
+        self.tensors[cntr+1] = np.tensordot(schmidt_matrix, B, ([1],[0]))
+        
+        if cntr < len(self.tensors) - 2:
+            self.center += 1    
+        else:
+            self.center = len(self.tensors)-2
+
+
+    def shift_left(self):
+
+        cntr = self.center
+        schmidt_matrix = np.eye(1)
+        
+        M = np.tensordot(self.tensors[cntr], self.tensors[cntr+1], axes=([2],[0]))  
+        A, schmidt_matrix, B = mps_svd(M, chi_max=4)
+
+        self.tensors[cntr] = np.tensordot(A, schmidt_matrix, ([2],[0]))
+        self.tensors[cntr+1] = B
+        
+        if cntr > 0:
+            self.center -= 1    
+        else:
+            self.center = 0
+            
 
     # def center_shift(self, C):
 
@@ -132,30 +166,29 @@ class FMPS:
 
     #     return z
 
+    
+    def to_dense(self, direction = "left"):
+        """ convert MPS to vector """ 
+            #(x) so far right to left is useless -> maybe remove it
+            #(+) change the nale later to -densed- or -to_vector- 
+        
+        vector = np.array([1]).reshape((1,1))  # (p, v)
+        
+        if direction == "left": # contract tensors from left to right
+            for ii in range(len(self.tensors)):
+                vector = np.tensordot(vector, self.tensors[ii], axes=([1],[0]))  # (p1, p2, v)
+                vector = vector.reshape((vector.shape[0] * vector.shape[1], vector.shape[2]))  # (p1*p2, v)
 
-    # def to_dense(self):
-    #     # convert MPS to vector 
+            vector = vector.reshape((vector.shape[0],))  # (p,)
+        
+        if direction == "right": # contract tensors from right to left
+            for ii in range(len(self.tensors)-1,-1,-1):
+                vector = np.tensordot(self.tensors[ii], vector, axes=([2],[0]))  # (v, p2, p1)
+                vector = vector.reshape((vector.shape[0], vector.shape[1] * vector.shape[2]))  # (v, p2*p1)
 
-    #     vector = np.array([1]).reshape((1,1))  # (p, v)
+            vector = vector.reshape((vector.shape[1],))  # (p,)
 
-    #     # contract left tensors
-    #     for ii in range(len(self.left_tensors)):
-
-    #         vector = np.tensordot(vector, self.left_tensors[ii], axes=([1],[0]))  # (p1, p2, v)
-    #         vector = vector.reshape((vector.shape[0]*vector.shape[1], vector.shape[2]))  # (p1*p2, v)
-
-    #     # contract with schmidt matrix
-    #     vector = vector @ self.schmidt_matrix  # (p, v)*(v, v) -> (p, v)
-
-    #     # contract right tensors
-    #     for ii in range(len(self.right_tensors)):
-
-    #         vector = np.tensordot(vector, self.right_tensors[ii], axes=([1],[0]))  # (p1, p2, v)
-    #         vector = vector.reshape((vector.shape[0]*vector.shape[1], vector.shape[2]))  # (p1*p2, v)
-
-    #     vector = vector.reshape((vector.shape[0],))  # (p,)
-
-    #     return vector
+        return vector
 
     
     # def XX_TEBD_O(self,dt): # I can not do it in class
@@ -202,56 +235,6 @@ class FMPS:
     #             #MPS.center_shift(self, +2)
     #             self.center_shift(+2)
     #         indx +=2
-        
-    #     return #left_tensors, right_tensors, schmidt_matrix #
-    
-    # def XX_TEBD_E(self, dt): # I can not do it in class
-        
-    #     self.center_shift( len(self.right_tensors)-2)
-        
-    #     left_tensors = self.left_tensors
-    #     right_tensors = self.right_tensors
-    #     schmidt_matrix = self.schmidt_matrix
-        
-    #     # print([aa.shape for aa in left_tensors],"  ",np.shape(schmidt_matrix),"  ",[aa.shape for aa in right_tensors])
-        
-    #     sX = np.array([[0.,1.],[1.,0.]])
-    #     sY = np.array([[0, -1j], [1j, 0]])
-    #     gate0 = expm(-1j*dt*(np.kron(sX, sX)+ 0.*np.kron(sY, sY))).reshape(2, 2, 2, 2)#expm(1j*dt*(np.kron(sX, sX)+ 0.*np.kron(sY, sY))).reshape(2, 2, 2, 2)
-        
-    #     indx = 0
-    #     while indx < len(right_tensors) + len(left_tensors)-2:
-
-    #         print([aa.shape for aa in left_tensors],"  ",np.shape(schmidt_matrix),"  ",[aa.shape for aa in right_tensors])
-            
-    #         print("---- ",indx," ---")
-    #         M1 = right_tensors[0] 
-    #         M2 = left_tensors[-1]
-    #         print(schmidt_matrix)
-    #         print(self.schmidt_matrix)
-    #         M = np.tensordot(M2, self.schmidt_matrix, axes=([2],[0])) #(left_tensors[0], s_matrix, axes=([2],[0]))  
-    #         M = np.tensordot(M, M1, axes=([2],[0]))
-    #         # print(np.shape(M))
-    #         Mf = np.tensordot(M, gate0, axes=([1,2],[2,3]))
-    #         Mf = np.transpose(Mf, (0, 3, 2, 1))
-    #         print("Mf: ",np.shape(Mf))
-            
-    #         A, schmidt_matrix, B = mps_svd(Mf, chi_max=4)
-            
-    #         print("A - S - B: ",np.shape(A), np.shape(schmidt_matrix), np.shape(B)) 
-            
-    #         del right_tensors[:1]
-    #         del left_tensors[-1:]
-    #         left_tensors.append(A)
-    #         right_tensors.insert(0,B)
-    #         self.schmidt_matrix=schmidt_matrix
-
-    #         #print(len(left_tensors), " loop", len(right_tensors))
-            
-    #         if indx < len(right_tensors) + len(left_tensors) - 4:
-    #              MPS.center_shift(self, -2)
-    #         indx +=2
-    #         print('\n')
         
     #     return #left_tensors, right_tensors, schmidt_matrix #
         
